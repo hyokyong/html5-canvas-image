@@ -1,11 +1,12 @@
-const canvas = document.getElementById("canvas1"); //width를 위해?
-const ctx = canvas.getContext("2d"); //2d 설정해줌
+const canvas = document.getElementById("canvas1");
+const ctx = canvas.getContext("2d"); 
+
 canvas.width  = window.innerWidth;
 canvas.height = window.innerHeight;
-let particleArray = []; //color, positon와 하나의 파티클을 저장하기 위함
+let particleArray = []; //color, position와 하나의 파티클을 저장하기 위함
 
 
-// get mouse mouse position anytime
+// 마우스 position
 let mouse = {
 	x: null,
 	y: null,
@@ -17,43 +18,49 @@ window.addEventListener('mousemove',
 
     //디폴트로 계속 실행됨?
 	function(event){
-		mouse.x = event.x + canvas.clientLeft/2; //클라이언트의 left value를 마우스 x 포지션에 더함
-		mouse.y = event.y + canvas.clientTop/2; //클라이언트의 y value를  마우스 y 포지션에 더함
+		mouse.x = event.x + canvas.clientLeft/2; // 왼쪽 테두리의 너비를 마우스 x 포지션에 더함
+		mouse.y = event.y + canvas.clientTop/2; // 위쪽 테두리의 너비를 마우스 y 포지션에 더함
 });
 
 //안에 코드는 나중에 load event에 붙일 거임
 //왜냐면 이 안에 코드들은 이미지가 완벽하게 loading된 후에 필요함
-//하지만 자바스크립트는 빠르고 이 몇 초를 기다릴수 없다면 에러를 뱉음
 function drawImage(){
-    let imageWidth = png.width || png.naturalWidth;
-    let imageHeight = png.height || png.naturalHeight;
+    let imageWidth = png.width;
+    let imageHeight = png.height;
 
     const data = ctx.getImageData(0, 0, imageWidth, imageHeight); //ImageData추출 할 직사각형의 왼쪽 상단 모서리에 대한 x 축, y축 좌표, 사각형 너비, 높이
+    console.log(data);
 
     ctx.clearRect(0,0,canvas.width, canvas.height); //사각형 영역을 지워줌
 
     class Particle {
         constructor(x, y, color, size){
-            this.x = x + canvas.width/2-png.width*2,
-            this.y = y + canvas.height/2-png.width*2,
+            this.x = x + canvas.width/2 - png.width*2,
+            this.y = y + canvas.height/2 - png.width*2,
             this.color = color,
             this.size = 2,
-            this.baseX = x + canvas.width/2-png.width*2,
-            this.baseY = y + canvas.height/2-png.width*2,
+            this.baseX = x + canvas.width/2 - png.width*2,
+            this.baseY = y + canvas.height/2 - png.width*2,
             this.density = ((Math.random() * 10) + 2); //얼마나 빨리 마우스에서 떨어지느냐 2-12 쓸수 있음
         }
+
+        // particle들을 나타내기 위해서 원을 그림
         draw() {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
-            ctx.closePath();
-            ctx.fill();
+            ctx.beginPath(); //draw를 시작하기 위해 beginPath 메소드를 실행
+            ctx.arc(this.x, this.y, this.size, 0, Math.PI*2); // arc : 원을 그리는 메소드 (x좌표, y좌표, 반지름, 라디안 각도시작, 라디안 각도끝)
+            ctx.closePath(); //경로의 현재 지점에서 경로의 시작 지점까지 선을 그림
+            ctx.fill(); //현재 그리기 경로를 채움
         }
+
+        // particle의 위치를 계산
         update() {
             ctx.fillStyle = this.color;
+
             // check mouse position/particle position - collision detection
+            // 마우스 interactiong이 시작되면 입자들이 잘 닫히는지 알아야함
             let dx = mouse.x - this.x;
             let dy = mouse.y - this.y;
-            let distance = Math.sqrt(dx*dx + dy*dy);
+            let distance = Math.sqrt(dx*dx + dy*dy); // sqrt => 제곱근
             let forceDirectionX = dx / distance;
             let forceDirectionY = dy / distance;
             // distance past which the force is zero
@@ -86,6 +93,7 @@ function drawImage(){
     function init(){
         particleArray = [];
 
+        //이중 FOR문 돌면서 
         for (var y = 0, y2 = data.height; y < y2; y++) {
             for (var x = 0, x2 = data.width; x < x2; x++) {
                 if (data.data[(y * 4 * data.width) + (x * 4) + 3] > 128) {
@@ -105,11 +113,10 @@ function drawImage(){
     }
     function animate(){
         requestAnimationFrame(animate);
-        ctx.fillStyle = 'rgba(255,255,255,.2)';
+        ctx.fillStyle = 'rgba(0,255,0,.5)'; //배경값 밝게 바꿈
         ctx.fillRect(0,0,innerWidth,innerHeight);
        // ctx.clearRect(0,0,innerWidth,innerHeight);
 	    
-	
 	    for (let i = 0; i < particleArray.length; i++){
             particleArray[i].update();
 	    }
