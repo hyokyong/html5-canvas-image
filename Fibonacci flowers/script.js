@@ -10,6 +10,7 @@ let hue = Math.random() * 360;
 let number = 0; //하나의 입자나 꽃잎이 그려지기 위해
 let scale = 10; //반지름이 커지는 역할
 
+
 //원 만들기
 function drawFlower() {
     let angle = number * 2; // number와 동일
