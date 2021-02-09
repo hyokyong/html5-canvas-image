@@ -1,9 +1,52 @@
 .container {
-    border: 1px solid black;
     width: 900px;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    
+    display: flex;
+    justify-content: space-around; /* 앞, 뒤, 사이 모두 간격 줌*/
+}
+button {
+    font-family: Impact;
+    position: relative;
+    width: 250px;
+    height: 80px;
+    border-radius: 10px;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 40px;
+    color: white;
+}
+button:before {
+    content: '';
+    background: black;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+}
+button:hover {
+    animation: squish 0.5s;
+}
+button:hover::before {
+    background: linear-gradient(to right, red, green, blue); /* 왼쪽에서 오른쪽으로 */
+    filter: url("#wave"); /* contrast 대비 조정 - 0%일 경우 완전히 회색 이미지가 되고, 100%일 경우 이미지가 그대로 유지됩니다.  */;
+}
+@keyframes squish {
+    0% {
+        transform: scaleY(1);
+    }
+    60% {
+        transform: scaleY(1.5);
+    }
+    80% {
+        transform: scaleY(0.9);
+    }
+    100% {
+        transform: scaleY(1);
+    }
 }

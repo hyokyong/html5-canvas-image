@@ -13,7 +13,17 @@
         <button>BUTTON 2</button>
         <button>BUTTON 3</button>
     </div>
-    <!-- <canvas id="canvas1"></canvas> -->
+   
+    <svg>
+        <defs>
+            <filter id="wave">
+                <feTurbulence type='fractalNoise' baseFrequency='0.00001 0.0001'
+                numOctaves="1" result="wrap"/>
+                <feDisplacementMap in2="warpOffset" in="SourceGraphic"
+                scale="30" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
     <script src="script.js"></script>
 </body>
 </html>
